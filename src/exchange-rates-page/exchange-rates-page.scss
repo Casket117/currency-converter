@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300&display=swap');
+
+.exchange-rate-block {
+    width: 400px;
+    height: 300px;
+    margin: 40px auto 0;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    border-radius: 5px;
+    font-family: Poppins;
+
+    #rate {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    p {
+        display: block;
+        padding: 10px 25px;
+    }
+    
+
+    .dropdown {
+
+        &:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropbtn {
+            display: block;
+            margin: 0 auto 20px;
+            width: 350px;
+            background-color: white;
+            border: 1px solid black;
+            border-radius: 5px;
+            cursor: pointer;    
+            font-size: 14px;
+        }
+
+        .dropdown-content {
+            display: none;
+            margin: -20px 25px;
+            position: absolute;
+            background-color: white;
+            min-width: 350px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 5px;
+
+            button {
+                color: black;
+                text-decoration: none;
+                display: block;
+                min-width: 350px;
+                border: none;
+                background-color: white;
+                border-radius: 5px;
+                font-size: 14px;
+            }
+        }
+    }
+
+    .rate-info {
+        display: block;
+        margin: 0 auto 20px;
+        width: 350px;
+
+        hr {
+            height: 2px; 
+            max-width: 360px;
+            background: rgb(96, 97, 113);
+            opacity: 0.5;
+            border: none; 
+        }
+
+        input {
+            width: 350px;
+            box-sizing: border-box;
+            outline: 0;
+            border: none;
+            cursor: default;
+        }
+    }
+}

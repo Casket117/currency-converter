@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300&display=swap');
+
+$btn-border: 1px solid #cdcdcd;
+
+.currency_switcher {
+        display: flex;
+        justify-content: space-between;
+        font-family: Poppins;
+        font-size: 24px;
+
+    .currency_name {
+        display: flex;
+        width: 300px;
+        margin-top: 20px;
+
+        button {
+            color: white;
+            width: 100%;
+            height: 50px;
+            background-color: cadetblue;
+            box-sizing: border-box;
+            border: none;
+            cursor: pointer;
+            border-top: $btn-border;
+            border-bottom: $btn-border;
+            border-right: $btn-border;
+            border-radius: 7%;
+            &:first-child {
+                border-left: $btn-border;
+            }
+        }
+    }
+}
+
+.calc-block {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+
+    .calc-block-input {
+        width: 300px;
+        box-sizing: border-box;
+        padding: 25px 25px;
+        border: 1px solid black;
+        border-radius: 10px;
+        box-sizing: border-box;
+
+        input {
+            font-weight: bold;
+            font-size: 30px;
+            max-width: 240px;
+            border: none;
+            outline: 0;
+        }
+    }
+}
