@@ -1,14 +1,15 @@
 import './exchange-rates-page.scss';
 
-import { useState, useEffect } from 'react';
+import {useEffect, useState} from 'react';
 
-import { CbrServices } from '../services/CbrServices';
+import {CbrServices} from '../services/CbrServices';
 
 const ExchangeRatesPage = () => {
 
     const currencyInfo = new CbrServices();
 
     const [currency, setCurrency] = useState([]);
+    const [valute, setValute] = useState({});
     const [basicCurrency, setBasicCurrency] = useState('RUB');
     const [usd, setUsd] = useState('');
     const [eur, setEur] = useState('');
@@ -17,16 +18,22 @@ const ExchangeRatesPage = () => {
     const getCourse = () => {
         currencyInfo.getAllCurr()
             .then(res => {
+
                 let valutes = [{ID: 1, CharCode: 'RUB', Value: 1}, ...Object.values(res.Valute)],
                     valutesState = Object.keys(res.Valute).reduce(function (acc, v) {
-                    acc[v.toLowerCase()] = res.Valute[v].Value;
-                    return acc;
-                }, {rub: 1});
+                        acc[v.toLowerCase()] = res.Valute[v].Value;
+                        return acc;
+                    }, {rub: 1});
+
+                console.log(valutes)
+                console.log(valutesState)
+
                 const {rub, usd, eur} = valutesState;
                 setRub(rub);
                 setUsd(usd);
                 setEur(eur);
                 setCurrency(valutes);
+                setValute(valutesState);
             })
     }
 
@@ -53,54 +60,67 @@ const ExchangeRatesPage = () => {
                 secondValute = {};
 
             function changeInputInfo(currency) {
-                
-            }
-            
-            if (basicCurrency === 'RUB') {
-                firstValute = {
-                    name: 'USD',
-                    value: usd
-                }
-                secondValute = {
-                    name: 'EUR',
-                    value: eur
-                }
+
             }
 
-            if (basicCurrency === 'USD') {
-                firstValute = {
-                    name: 'RUB',
-                    value: usd / rub
-                }
-                secondValute = {
-                    name: 'EUR',
-                    value: usd / eur
-                }
+            let mapping = {
+                rub: ['USD', 'EUR'],
+                usd: ['RUB', 'EUR'],
+                eur: ['RUB', 'USD']
             }
 
-            if (basicCurrency === 'EUR') {
-                firstValute = {
-                    name: 'RUB',
-                    value: rub / eur
-                }
-                secondValute = {
-                    name: 'USD',
-                    value: usd / eur
-                }
-            }
+            let val = basicCurrency.toLowerCase(),
+                mapTo = mapping[val]
+
+            firstValute = {name: mapTo[0], value: valute[mapTo[0].toLowerCase()]}
+            secondValute = {name: mapTo[1], value: valute[mapTo[1].toLowerCase()]}
+
+
+            // if (basicCurrency === 'RUB') {
+            //     firstValute = {
+            //         name: 'USD',
+            //         value: usd
+            //     }
+            //     secondValute = {
+            //         name: 'EUR',
+            //         value: eur
+            //     }
+            // }
+            //
+            // if (basicCurrency === 'USD') {
+            //     firstValute = {
+            //         name: 'RUB',
+            //         value: usd / rub
+            //     }
+            //     secondValute = {
+            //         name: 'EUR',
+            //         value: usd / eur
+            //     }
+            // }
+            //
+            // if (basicCurrency === 'EUR') {
+            //     firstValute = {
+            //         name: 'RUB',
+            //         value: rub / eur
+            //     }
+            //     secondValute = {
+            //         name: 'USD',
+            //         value: usd / eur
+            //     }
+            // }
 
             return (
                 <>
-                <div className="rate-info">
-                    <span>Цена {firstValute.name}</span>
-                    <input value={firstValute.value} type="text" readOnly/>
-                    <hr/>
-                </div>
-                <div className="rate-info">
-                    <span>Цена {secondValute.name}</span>
-                    <input value={secondValute.value}type="text" readOnly/>
-                    <hr/>
-                </div>
+                    <div className="rate-info">
+                        <span>Цена {firstValute.name}</span>
+                        <input value={firstValute.value} type="text" readOnly/>
+                        <hr/>
+                    </div>
+                    <div className="rate-info">
+                        <span>Цена {secondValute.name}</span>
+                        <input value={secondValute.value} type="text" readOnly/>
+                        <hr/>
+                    </div>
                 </>
             )
         }
@@ -109,20 +129,20 @@ const ExchangeRatesPage = () => {
 
         return (
             <>
-            <div className="dropdown">
-                <button className="dropbtn">{basicCurrency}</button>
-                <div className="dropdown-content">
-                    {btns}
+                <div className="dropdown">
+                    <button className="dropbtn">{basicCurrency}</button>
+                    <div className="dropdown-content">
+                        {btns}
+                    </div>
                 </div>
-            </div>
-            {input}
+                {input}
             </>
         )
     }
 
     const onValueChange = (e) => {
         e.preventDefault();
-        setBasicCurrency(e.target.value); 
+        setBasicCurrency(e.target.value);
     }
 
     const items = renderExchangeBlock(currency);
