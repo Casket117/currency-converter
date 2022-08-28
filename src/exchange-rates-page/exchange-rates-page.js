@@ -10,28 +10,32 @@ const ExchangeRatesPage = () => {
 
     const [currency, setCurrency] = useState([]);
     const [basicCurrency, setBasicCurrency] = useState('RUB');
-    const [usd, setUsd] = useState('');
-    const [eur, setEur] = useState('');
-    const [rub, setRub] = useState('');
+    const [valute, setValute] = useState({});
 
     const getCourse = () => {
         currencyInfo.getAllCurr()
             .then(res => {
-                let valutes = [{ID: 1, CharCode: 'RUB', Value: 1}, ...Object.values(res.Valute)],
-                    valutesState = Object.keys(res.Valute).reduce(function (acc, v) {
-                    acc[v.toLowerCase()] = res.Valute[v].Value;
+                let valutes = [{ID: 1, CharCode: 'RUB', Value: 1}, ...Object.values(res.Valute)];
+
+                setCurrency(valutes);
+            })
+    }
+
+    const getCourseRate = () => {
+        currencyInfo.getAllCurrRate()
+            .then(res => {
+                let valutesState = Object.keys(res.rates).reduce(function (acc, v) {
+                    acc[v.toLowerCase()] = res.rates[v];
                     return acc;
                 }, {rub: 1});
-                const {rub, usd, eur} = valutesState;
-                setRub(rub);
-                setUsd(usd);
-                setEur(eur);
-                setCurrency(valutes);
+                console.log(valutesState)
+                setValute(valutesState);
             })
     }
 
     useEffect(() => {
         getCourse();
+        getCourseRate();
     }, [])
 
     function renderExchangeBlock(arr) {
@@ -49,58 +53,33 @@ const ExchangeRatesPage = () => {
         })
 
         const inputInfo = () => {
-            let firstValute = {},
-                secondValute = {};
-
-            function changeInputInfo(currency) {
-                
-            }
-            
-            if (basicCurrency === 'RUB') {
-                firstValute = {
-                    name: 'USD',
-                    value: usd
-                }
-                secondValute = {
-                    name: 'EUR',
-                    value: eur
-                }
+            let mapping = {
+                rub: ['USD', 'EUR'],
+                usd: ['RUB', 'EUR'],
+                eur: ['RUB', 'USD']
             }
 
-            if (basicCurrency === 'USD') {
-                firstValute = {
-                    name: 'RUB',
-                    value: usd / rub
-                }
-                secondValute = {
-                    name: 'EUR',
-                    value: usd / eur
-                }
-            }
+            let val = basicCurrency.toLowerCase(),
+                mapTo = mapping[val],
+                firstValute = {},
+                secondValute = {name: mapTo[1], value: (1 / valute[mapTo[1].toLowerCase()] / 1 * valute[val]).toFixed(4)};
 
-            if (basicCurrency === 'EUR') {
-                firstValute = {
-                    name: 'RUB',
-                    value: rub / eur
-                }
-                secondValute = {
-                    name: 'USD',
-                    value: usd / eur
-                }
-            }
+            val === 'rub' 
+                ? firstValute = {name: mapTo[0], value: (1 / valute[mapTo[0].toLowerCase()]).toFixed(4)} 
+                : firstValute = {name: mapTo[0], value: (1 / valute[val]).toFixed(4)};
 
             return (
                 <>
-                <div className="rate-info">
-                    <span>Цена {firstValute.name}</span>
-                    <input value={firstValute.value} type="text" readOnly/>
-                    <hr/>
-                </div>
-                <div className="rate-info">
-                    <span>Цена {secondValute.name}</span>
-                    <input value={secondValute.value}type="text" readOnly/>
-                    <hr/>
-                </div>
+                    <div className="rate-info">
+                        <span>Цена {firstValute.name}</span>
+                        <input value={firstValute.value} type="text" readOnly/>
+                        <hr/>
+                    </div>
+                    <div className="rate-info">
+                        <span>Цена {secondValute.name}</span>
+                        <input value={secondValute.value}type="text" readOnly/>
+                        <hr/>
+                    </div>
                 </>
             )
         }
@@ -110,7 +89,8 @@ const ExchangeRatesPage = () => {
         return (
             <>
             <div className="dropdown">
-                <button className="dropbtn">{basicCurrency}</button>
+                <button onClick={onActiveCurrency} 
+                        className="dropbtn">{basicCurrency}</button>
                 <div className="dropdown-content">
                     {btns}
                 </div>
@@ -120,9 +100,47 @@ const ExchangeRatesPage = () => {
         )
     }
 
+    const changeActive = (active) => {
+        active.contains('active') === true ? active.remove('active') : active.add('active');
+    }
+
     const onValueChange = (e) => {
         e.preventDefault();
         setBasicCurrency(e.target.value); 
+        e.target.parentElement.previousElementSibling.classList.toggle('active');
+
+        let target = e.target.parentElement.classList;
+
+        changeActive(target);
+    }
+
+    const onActiveCurrency = (e) => {
+        e.preventDefault(); 
+        e.target.nextElementSibling.classList.toggle('active');
+
+        let target = e.currentTarget.classList;
+
+        let dropBtn = document.querySelector('.dropbtn'),
+            dropContent = document.querySelector('.dropdown-content');
+
+        function hideActive() {
+                dropBtn.classList.remove('active');
+                dropContent.classList.remove('active');
+        }
+
+        document.addEventListener('click', (e) => {
+            if (e.target !== dropBtn) { 
+                hideActive();
+            }
+        })
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Escape') { 
+                hideActive();
+            }
+        })
+        
+        changeActive(target);
     }
 
     const items = renderExchangeBlock(currency);

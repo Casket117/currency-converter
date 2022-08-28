@@ -21,7 +21,7 @@
 
     .dropdown {
 
-        &:hover .dropdown-content {
+        .dropdown-content.active {
             display: block;
         }
 
@@ -34,11 +34,23 @@
             border-radius: 5px;
             cursor: pointer;    
             font-size: 14px;
+
+            &.active {
+                background-color: black;
+                color: white;
+                &:hover {
+                    opacity: 1;
+                }
+            }
+
+            &:hover {
+                opacity: 0.7;
+            }
         }
 
         .dropdown-content {
             display: none;
-            margin: -20px 25px;
+            margin: -10px 25px;
             position: absolute;
             background-color: white;
             min-width: 350px;
@@ -55,6 +67,10 @@
                 background-color: white;
                 border-radius: 5px;
                 font-size: 14px;
+                &:hover {
+                    background-color: rgb(227, 227, 227);
+                    transition: background-color 0.3s ease-out 0s;
+                }
             }
         }
     }

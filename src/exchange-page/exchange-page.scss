@@ -2,6 +2,12 @@
 
 $btn-border: 1px solid #cdcdcd;
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0; 
+}
+
 .currency_switcher {
         display: flex;
         justify-content: space-between;
@@ -27,6 +33,9 @@ $btn-border: 1px solid #cdcdcd;
             border-radius: 7%;
             &:first-child {
                 border-left: $btn-border;
+            }
+            &.active {
+                background-color: rgb(71, 53, 163);
             }
         }
     }

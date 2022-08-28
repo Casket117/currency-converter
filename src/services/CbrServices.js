@@ -12,6 +12,10 @@ class CbrServices {
     getAllCurr = () => {
         return this.getResource('https://www.cbr-xml-daily.ru/daily_json.js');
     }
+
+    getAllCurrRate = () => {
+        return this.getResource('https://www.cbr-xml-daily.ru/latest.js');
+    }
 }
 
 export { CbrServices };
